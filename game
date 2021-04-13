@@ -182,27 +182,35 @@ var Player = function (config) {
     this.x = config.x || 200;
     this.y = config.y || 200;
     this.size = config.size || 50;
-    this.speed = config.speed || 1;
-    this.jump = config.jump || 6;
+    this.speed = config.speed || 3;
+    this.jump = config.jump || 10;
     this.drawCharacter = config.drawCharacter || function() {};
     this.score = config.score || 0;
+    this.xVeloctiy = config.xVelocity || 0;
+    this.yVelocity = config.yVelocity || 0;
+    this.jumpTime = config.jumpTime || null;
 };
 
 var sean = new Player({
     x: 100, 
-    y: 100,
-    size: 83,
+    y: 309,
+    size: 69,
     drawCharacter: function() {
-        seanBitmoji(this.x, this.y + 35, this.size);
+        seanBitmoji(this.x - 3, this.y + 35, this.size);
     }
 });
 
+//Ball Class
+var Ball = function(config) {
+    this.x  = config.x;
+};
+
 var miles = new Player({
     x: 300,
-    y: 100,
-    size: 56,
+    y: 325,
+    size: 40,
     drawCharacter: function() {
-        milesDrawBitmoji(this.x, this.y, this.size);
+        milesDrawBitmoji(this.x, this.y + 2, this.size);
     }
 });
 
@@ -220,43 +228,79 @@ Player.prototype.drawCharacter = function() {
 
 //move Player methods
 Player.prototype.characterJump = function() {
-    if (this.y >= 0) {
+    if (this.y >= 100 && this.yVelocity < 0) {
         this.y -= this.jump;   
     }
-      
+    this.yVelocity += this.jump;
+    this.jumpTime = frameCount;
 };
 
 Player.prototype.fall = function() {
-    this.y += 1;    
+    if (this.y <= 343) {
+        var t = (frameCount - this.jumpTime) / 60;
+        this.yVelocity = - 20 * t*t;
+        this.y -= this.yVelocity;
+    }
 };
 
 Player.prototype.left = function() {
     this.x -= this.speed;
+    this.xVelocity -= this.speed;
 };
 
 Player.prototype.right = function() {
     this.x += this.speed;
+    this.xVelocity += this.speed;
 };
 
+//draw shadow method
+Player.prototype.drawShadow = function() {
+    var shadowSize = (this.y) / 6;
+    fill(84, 84, 84, 100);
+    ellipse(this.x, 387, shadowSize,shadowSize / 5); 
+};
 
 draw = function() {
     background(247, 247, 247);
     
+    //moving for sean
     if (keyIsPressed) {
-    //jumping up for each character
+        //jumping
+        if (key.toString() === 'w') {
+            sean.characterJump();
+        }
+        //moving right
+        if (key.toString() === 'd') {
+            sean.right();
+        }
+        else if (key.toString() === 'a') {
+            sean.left();
+        }
+    }
+    
+    //moving for miles
+    if (keyIsPressed) {
+        //jumping
         if (keyCode === UP) {
             miles.characterJump();
-         }
-        else if (key.toString() === 'w') {
-            sean.characterJump();
-         } 
+        }
+         //moving right
+        if (keyCode === 39) {
+            miles.right();
+        }
+        //moving left
+        else if (keyCode === 37) {
+            miles.left();
+        }
     }
+    
     
     //continuos things happening to players
     for (var i in players) { 
-        if (players[i].y <= 300) {
+        if (players[i].y <= 314) {
             players[i].fall();
         }
+        players[i].drawShadow();
     }
 
     sean.drawCharacter();
