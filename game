@@ -261,7 +261,23 @@ Player.prototype.drawShadow = function() {
 };
 
 draw = function() {
-    background(247, 247, 247);
+    //Background
+    background(0, 64, 255);
+    
+    for (var i = 0; i < 50; i++) {
+        image(getImage("cute/GrassBlock"), -2 +i *25, 350, 50, 50);
+        image(getImage("cute/CharacterBoy"), -4 + i *25, 88, 25, 50);
+        image(getImage("space/girl1"), -21 + i *25, 58, 75, 75);
+        image(getImage("cute/CharacterBoy"), -4 + i *25, 37, 25, 50);
+        image(getImage("space/girl3"), -20 + i *25, 111, 75, 75);
+        image(getImage("space/background"), 0 , -1, 410, 45);
+        image(getImage("creatures/Hopper-Cool"), 0 + i *25, 166, 25, 25);
+}
+
+for ( var j = 0; j < 20; j++) {
+    image(getImage("cute/Star"), round(random(4, 380)), round(random( -15, 20)), 25, 25);
+}    
+
     
     //moving for sean
     if (keyIsPressed) {
