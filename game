@@ -179,10 +179,15 @@ var seanBitmoji = function(x, y, h){
 
 };
 
+//global variables
+var goalTime;
+var stopGoalTime = null;
+
 //player class
 var Player = function (config) {
     this.name = config.name || "default Player";
     this.x = config.x || 200;
+    this.xOriginal = config.x || 200;
     this.y = config.y || 200;
     this.size = config.size || 50;
     this.speed = config.speed || 3;
@@ -197,7 +202,8 @@ var Player = function (config) {
 
 var sean = new Player({
     name: "Sean",
-    x: 100, 
+    x: 100,
+    xOriginal: 100,
     y: 309,
     size: 69,
     drawCharacter: function() {
@@ -209,6 +215,7 @@ var sean = new Player({
 var miles = new Player({
     name: "Miles",
     x: 300,
+    xOriginal: 300,
     y: 309,
     size: 40,
     drawCharacter: function() {
@@ -225,7 +232,7 @@ var players = [
 //Ball Class
 var Ball = function(config) {
     this.x  = config.x || 200;
-    this.y = config.y || 360;
+    this.y = config.y || 300;
     this.size = config.size || 30;
     this.xVelocity = config.xVelocity || 0;
     this.yVelocity = config.yVelocity || 0;
@@ -234,7 +241,7 @@ var Ball = function(config) {
 };
 
 //Ball instance
-var defaultBall = new Ball();
+var defaultBall = new Ball({x: 200});
 
 //balls array
 var balls = [
@@ -244,7 +251,7 @@ var balls = [
 //balls draw method
 Ball.prototype.draw = function() {
     this.y = constrain(this.y, -200, 390 - this.size);
-    this.x = constrain(this.x, this.size, 400 - this.size);
+    this.x = constrain(this.x, this.size - 30, 430 - this.size);
     fill(255, 255, 255);
     stroke(0, 0, 0);
     strokeWeight(this.size * 0.03);
@@ -265,7 +272,9 @@ Ball.prototype.draw = function() {
 };
 
 Ball.prototype.move = function() {
-    this.x += this.xVelocity;
+    if (this.x < 400 && this.x > 0) {
+        this.x += this.xVelocity;
+    }
     if (this.y + - this.size < 390) {
         var t = (frameCount - this.collideTime) / 60;
         if (this.yVelocity > 0) {
@@ -274,12 +283,17 @@ Ball.prototype.move = function() {
             this.yVelocity -= 1 * t*t;
         }
     }
+    this.yVelocity = constrain(this.yVelocity, -80, 80);
     this.y -= this.yVelocity;
 };
 
 Ball.prototype.groundCollide = function() {
     this.collideTime = frameCount;
-    this.yVelocity = -this.yVelocity / 3;
+    if (abs(this.yVelocity) < 100) {
+        this.yVelocity = -this.yVelocity / 3;
+    } else {
+        this.yVelocity = 30;
+    }
     //println(frameCount - this.collideTime);
 };
 
@@ -290,8 +304,52 @@ Ball.prototype.groundCollideDetect = function() {
     }
 };
 
-//Ball kick method
+Ball.prototype.goal = function() {
+    if (!stopGoalTime) {
+        if (this.x > 360 && this.y > 230) {
+            sean.score ++;
+            goalTime = frameCount;
+            stopGoalTime = true;
+            //println("sean's goal");
+        }
+        else if (this.x < 40 && this.y > 230) {
+            miles.score ++;
+            goalTime = frameCount;
+            stopGoalTime = true;
+            //println("miles' goal");
+        }
+    }
+};
 
+Ball.prototype.goalReset = function() {
+    if (frameCount - goalTime === 90) {
+        this.x = 200;
+        this.y = 300;
+        stopGoalTime = false;
+        println("goalReset");
+        return true;
+    }
+};
+
+Ball.prototype.netCollide = function() {
+    if (this.x > 360 && abs(243-this.y) < 7) {
+        this.yVelocity = 0;
+        if (this.y < 243) {
+            this.xVelcity = -2;
+            this.yVelocity = 5;
+
+        }
+    } 
+    if (this.x < 40 && abs(243-this.y) < 7) {
+        this.yVelocity = 0;
+        if (this.y < 243) {
+            this.xVelcity = 2;
+            this.yVelocity = 5;
+        }
+    }  
+};
+
+//Player Methods
 
 //draw Player method
 Player.prototype.drawCharacter = function() {
@@ -318,38 +376,41 @@ Player.prototype.fall = function() {
 };
 
 Player.prototype.left = function() {
-    this.x -= this.speed;
-    this.xVelocity -= this.speed;
-};
-
-Player.prototype.right = function() {
-    this.x += this.speed;
-    this.xVelocity += this.speed;
-};
-
-Player.prototype.kickDetect = function() {
-    for (var i in balls) {
-        println(Player.name + " is " + dist(this.x, this.y+70, balls[i].x, balls[i].y));
-        if (dist(this.x, this.y + 70, balls[i].x, balls[i].y) < 100) {
-            println('kicked');
-            return true;
-        } else {
-            return false;
-        }
+    if (this.x > 40) {
+        this.x -= this.speed;
+        this.xVelocity -= this.speed;
     }
 };
 
+Player.prototype.right = function() {
+    if (this.x < 360) {
+        this.x += this.speed;
+        this.xVelocity += this.speed;
+    }
+};
+
+Player.prototype.kickDetect = function() {
+    //println("kickdetect");
+    if (sqrt(sq(this.x-defaultBall.x)+sq(this.y+70-defaultBall.y)) < 50) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+//Ball kick method
 Ball.prototype.kicked = function() {
+    //println("kick method");
     for (var i in players) {
-        if (players[i].kickDetect === true) {
-            println(players[i].name + " kicked the ball");
-            if (this.x - players[i].x < 0) {
-                this.xVelocity = 3 * players[i].kickPower;
+        if (players[i].kickDetect()) {
+            //println(players[i].name + " kicked the ball");
+            if (this.x < players[i].x) {
+                this.xVelocity = -2 * players[i].kickPower;
             }
-            else if (this.x - players[i].x > 0) {
-                this.xVelocity = -3 * players[i].kickPower;
+            else if (this.x > players[i].x) {
+                this.xVelocity = 2 * players[i].kickPower;
             }
-            this.yVelocity += 3;
+            this.yVelocity += 6;
         }
     }
 };
@@ -373,7 +434,7 @@ var drawFrontOfGoal = function(side) {
         for (var i = 0; i < 11; i++) {
             stroke(56, 56, 56);
             strokeWeight(2);
-            line(x + 20 - 4 * i, 256 + 12 * i, x + 68 - 1.5 * i,x + 276 + 12 * i);
+            line(x + 20 - 4 * i, 256 + 12 * i, x + 68 - 1.5 * i, x + 276 + 12 * i);
         }
         for (var j = 0; j < 5; j++) {
             line(x + j * 12 + 20, 265, x + j * 12, 388 + 2 * j);
@@ -384,7 +445,29 @@ var drawFrontOfGoal = function(side) {
             line(x + 67 - 7 * i, 227 + 5 * i, x + 89 - 2 * i, 234 + 4 * i);
         }
         for (var j = 0; j < 5; j++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
             line(x + j * 12 + 20, 265, x + j * 9 + 60, 228 + 2 * j);
+            
+        //bars
+        stroke(0, 0, 0);
+        strokeWeight(10); 
+        line(x - 34, 390,x + 20, 261); 
+        line(x + 20, 261, x + 72, 264);
+        line(x + 72, 264, x + 58, 394);
+        line(x + 20, 261, x + 58, 230);
+        line(x + 72, 264, x + 104, 228);
+        line(x + 58, 230, x + 104, 228);
+        line(x - 34, 386, x + 58, 394);
+        stroke(255, 255, 255);
+        strokeWeight(7);
+        line(x - 34, 390, x + 20, 261); 
+        line(x + 20, 261, x + 72, 264);
+        line(x + 72, 264, x + 58, 394);
+        line(x + 20, 261, x + 58, 230);
+        line(x + 72, 264, x + 104, 228);
+        line(x + 58, 230, x + 104, 228);
+        line(x - 34, 386, x + 58, 394);
         }
     }
     else if (side === 'right') {
@@ -406,35 +489,7 @@ var drawFrontOfGoal = function(side) {
         for (var j = 0; j < 5; j++) {
             line(x - j * 12 - 20, 265, x - j * 9 - 60, 228 + 2 * j);
         }
-    }
-    
-    if (side === 'left') {
-        x = -50;
-        
-        //bars
-        stroke(0, 0, 0);
-        strokeWeight(10); 
-        line(x - 34, 390,x + 20, 261); 
-        line(x + 20, 261, x + 72, 264);
-        line(x + 72, 264, x + 58, 394);
-        line(x + 20, 261, x + 58, 230);
-        line(x + 72, 264, x + 104, 228);
-        line(x + 58, 230, x + 104, 228);
-        line(x - 34, 386, x + 58, 394);
-        stroke(255, 255, 255);
-        strokeWeight(7);
-        line(x - 34, 390, x + 20, 261); 
-        line(x + 20, 261, x + 72, 264);
-        line(x + 72, 264, x + 58, 394);
-        line(x + 20, 261, x + 58, 230);
-        line(x + 72, 264, x + 104, 228);
-        line(x + 58, 230, x + 104, 228);
-        line(x - 34, 386, x + 58, 394);
-    }
-    
-    else if (side === 'right') {
-        x = 450;
-        
+
         //bars
         stroke(0, 0, 0);
         strokeWeight(10); 
@@ -447,7 +502,7 @@ var drawFrontOfGoal = function(side) {
         line(x + 34, 386, x - 58, 394);
         stroke(255, 255, 255);
         strokeWeight(7);
-        line(x + 34, 390,x -20, 261); 
+        line(x + 34, 390, x -20, 261); 
         line(x - 20, 261, x - 72, 264);
         line(x - 72, 264, x - 58, 394);
         line(x - 20, 261, x - 58, 230);
@@ -455,7 +510,7 @@ var drawFrontOfGoal = function(side) {
         line(x - 58, 230, x - 104, 228);
         line(x + 34, 386, x - 58, 394);
     }
-};
+}; 
 
 //draw back of goal fucntion allows things to go into goals
 var drawBackOfGoal = function(side) {
@@ -543,6 +598,7 @@ draw = function() {
     //grass
     image(getImage("cute/GrassBlock"), -10, 274, 422, 166);
 
+    //call in draw goal functions
     drawBackOfGoal('left');
     drawBackOfGoal('right');
     
@@ -584,24 +640,36 @@ draw = function() {
         }
         players[i].drawShadow();
         players[i].drawCharacter();
-        //players[i].kickDetect();
-        println(players[i].name + " is " + dist(players[i].x, players[i].y+70, defaultBall.x, defaultBall.y));
+    }
+    if (defaultBall.goalReset() === true) {
+        miles.y = 309;
+        miles.x = 300;
+        sean.y = 309;
+        sean.x = 100;
     }
     
     //continuous things happening to ball
-    defaultBall.draw();
     if (defaultBall.groundCollideDetect()) {
         defaultBall.groundCollide();
     }
-    defaultBall.move();
-    defaultBall.kicked();
-
-    if ((frameRate/60) % 1 === 0) {
-        println('defaultBall.yVelocity');
-    }
     
+    defaultBall.kicked();
+    defaultBall.goal();
+    defaultBall.goalReset();
+    defaultBall.netCollide();
+    defaultBall.move();
+    defaultBall.draw();
+
     drawFrontOfGoal('left');
     drawFrontOfGoal('right');
-
-
+/*
+    //debug
+    println(miles.name + " is " + dist(miles.x, miles.y+70, defaultBall.x, defaultBall.y));
+    println("square " + sqrt(sq(miles.x-defaultBall.x)+sq(miles.y+70-defaultBall.y)));
+    //players[i].kickDetect();
+    */
+    //println("goalTime " + goalTime);
+    //println(frameCount);
+    //strokeWeight(5);
+    //line(0, 243, 400, 243);
 };
