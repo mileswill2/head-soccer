@@ -283,7 +283,7 @@ Ball.prototype.move = function() {
             this.yVelocity -= 1 * t*t;
         }
     }
-    this.yVelocity = constrain(this.yVelocity, -80, 80);
+    this.yVelocity = constrain(this.yVelocity, -37, 37);
     this.y -= this.yVelocity;
 };
 
