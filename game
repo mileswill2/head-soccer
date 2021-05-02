@@ -141,45 +141,115 @@ var milesDrawBitmoji=function(bitmojiX,bitmojiY,bitmojiH){
 };
 
 var seanBitmoji = function(x, y, h){
-noStroke();
-fill(255,205,148); //skin tone
-ellipse(x-(h/150), y-(h/150), h/150*87, h/150*100); //head
-fill(255, 255, 255);
-arc(x-(h/150*42), y+(h/150*37), h/150*28, h/150*55, h/150*0, h/150*361); //left chisel
-arc(x+(h/150*42), y+(h/150*37), h/150*28, h/150*55, h/150*0, h/150*360); //right chisel
-fill(150, 75, 0);//brown hair
-quad(x-(h/150*50), y-(h/150), x-(h/150*37), y-(h/150*32), x-(h/150), y-(h/150*50), x-(h/150*30), y+(h/150*12));//left hair
-quad(x+(h/150*49), y-(h/150*2), x+(h/150*34), y-(h/150*32), x+(h/150*13), y-(h/150*50), x+(h/150*35), y+(h/150*14));//right hair
-ellipse(x-(h/150), y-(h/150*37), h/150*62, h/150*28); //top hair
-stroke(0, 0, 0);
-fill(150, 75, 0);//brown eyes fill
-ellipse(x-(h/150*10), y-(h/150), h/150*6, h/150*4); //left eye
-ellipse(x+(h/150*12), y-(h/150), h/150*6, h/150*4); //right eye
-fill(255,205,148); //skin tone
-bezier(x,y,x+(h/150*21),y+h/150*22,x-h/150*8,y+h/150*20,x-h/150*4,y+h/150*15);//nose
-
-fill(255, 255, 255);//white fill for teeth
-arc(x+(h/150*1), y+(h/150*25), h/150*30, h/150*13,1,180);//mouth
-line(x-(h/150*15), y+(h/150*26), x+(h/150*16), y+(h/150*24)); //top of mouth
-fill(63, 51, 77);
-quad(x-(h/150*35), y+(h/150*82), x+(h/150*45), y+(h/150*83), x+(h/150*45), y+(h/150*69), x-(h/150*39), y+(h/150*35));
-quad(x-(h/150*31), y+(h/150*80), x+(h/150*52), y+(h/150*25), x+(h/150*48), y+(h/150*85), x-(h/150*33), y+(h/150*83));
-fill(5, 5, 5);
-
-arc(x+(h/150*2), y-(h/150*41), h/150*63, h/150*29, 182, 360);
-rect(x-(h/150*31), y-(h/150*34), h/150*66, h/150*16);
-rect(x-(h/150*32),y-(h/150*29),h/150*23,h/150*-13);
-rect(x+(h/150*15), y-(h/150*28), h/150*19, h/150*-13);
-fill(150, 75, 0);
-fill(43, 240, 73);
-textSize(h/150*22);
-text("SF", x-(h/150*11),y+(h/150*62),h/150*265,h/150*220);
+    noStroke();
+    fill(255,205,148); //skin tone
+    ellipse(x-(h/150), y-(h/150), h/150*87, h/150*100); //head
+    fill(150, 75, 0);
+    //brown hair
+    quad(x-(h/150*50), y-(h/150), x-(h/150*37), y-(h/150*32), x-(h/150), y-(h/150*50), x-(h/150*30), y+(h/150*12));//left hair
+    quad(x+(h/150*49), y-(h/150*2), x+(h/150*34), y-(h/150*32), x+(h/150*13), y-(h/150*50), x+(h/150*35), y+(h/150*14));//right hair
+    ellipse(x-(h/150), y-(h/150*37), h/150*62, h/150*28); //top hair
+    strokeWeight(1);
+    stroke(0, 0, 0);
+    fill(150, 75, 0);//brown eyes fill
+    ellipse(x-(h/150*10), y-(h/150), h/150*6, h/150*4); //left eye
+    ellipse(x+(h/150*12), y-(h/150), h/150*6, h/150*4); //right eye
+    fill(255,205,148); //skin tone
+    bezier(x,y,x+(h/150*21),y+h/150*22,x-h/150*8,y+h/150*20,x-h/150*4,y+h/150*15);//nose
+    
+    fill(255, 255, 255);//white fill for teeth
+    arc(x+(h/150*1), y+(h/150*25), h/150*30, h/150*13,1,180);//mouth
+    line(x-(h/150*15), y+(h/150*26), x+(h/150*16), y+(h/150*24)); //top of mouth
+    fill(63, 51, 77);
+    noStroke();
+    quad(x-(h/150*35), y+(h/150*82), x+(h/150*45), y+(h/150*83), x+(h/150*45), y+(h/150*69), x-(h/150*39), y+(h/150*35));
+    quad(x-(h/150*31), y+(h/150*80), x+(h/150*52), y+(h/150*25), x+(h/150*48), y+(h/150*85), x-(h/150*33), y+(h/150*83));
+    fill(5, 5, 5);
+    
+    arc(x+(h/150*2), y-(h/150*41), h/150*63, h/150*29, 182, 360);
+    rect(x-(h/150*31), y-(h/150*34), h/150*66, h/150*16);
+    rect(x-(h/150*32),y-(h/150*29),h/150*23,h/150*-13);
+    rect(x+(h/150*15), y-(h/150*28), h/150*19, h/150*-13);
+    fill(150, 75, 0);
+    fill(43, 240, 73);
+    textSize(h/150*22);
+    text("SF", x-(h/150*11),y+(h/150*62),h/150*265,h/150*220);
 
 };
 
+//global variables
+var goalTime;
+var stopGoalTime = null;
+var scene = 0;
+
+//Button code from khan
+var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+};
+
+//Method to draw button
+Button.prototype.draw = function() {
+    fill(0, 234, 255);
+    rectMode(CORNER);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+//Method to check if mouse is clicked inside the button
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+//Function that produces an onclick if the button is pressed on
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+ 
+//start button
+var startButton = new Button({
+    x: 96,
+    y: 105,
+    width: 75,
+    label: "Start",
+    onClick: function() {
+        scene = 1;}
+});
+
+var settingsButton = new Button({
+    x: 230,
+    y: 105,
+    width: 87,
+    label: "Settings",
+    onClick: function() {
+        scene = 2;}
+});
+var backButton = new Button({
+    x: 291,
+    y: 321,
+    width: 69,
+    label: "Back",
+    onClick: function() {
+        scene = 0;}
+});
+
 //player class
 var Player = function (config) {
+    this.name = config.name || "default Player";
     this.x = config.x || 200;
+    this.xOriginal = config.x || 200;
     this.y = config.y || 200;
     this.size = config.size || 50;
     this.speed = config.speed || 3;
@@ -189,28 +259,28 @@ var Player = function (config) {
     this.xVeloctiy = config.xVelocity || 0;
     this.yVelocity = config.yVelocity || 0;
     this.jumpTime = config.jumpTime || null;
+    this.kickPower = config.kickPower || 1;
 };
 
 var sean = new Player({
-    x: 100, 
+    name: "Sean",
+    x: 100,
+    xOriginal: 100,
     y: 309,
     size: 69,
     drawCharacter: function() {
-        seanBitmoji(this.x - 3, this.y + 35, this.size);
+        seanBitmoji(this.x - 3, this.y + 45, this.size);
     }
 });
 
-//Ball Class
-var Ball = function(config) {
-    this.x  = config.x;
-};
-
 var miles = new Player({
+    name: "Miles",
     x: 300,
-    y: 325,
+    xOriginal: 300,
+    y: 309,
     size: 40,
     drawCharacter: function() {
-        milesDrawBitmoji(this.x, this.y + 2, this.size);
+        milesDrawBitmoji(this.x, this.y + 20, this.size);
     }
 });
 
@@ -219,16 +289,155 @@ var players = [
     miles
 ];
 
+//Ball Class
+var Ball = function(config) {
+    this.x  = config.x || 200;
+    this.y = config.y || 300;
+    this.size = config.size || 30;
+    this.xVelocity = config.xVelocity || 0;
+    this.yVelocity = config.yVelocity || 0;
+    this.yVeloctiyTemp = config.yVelocityTemp || 0;
+    this.collideTime = config.collideTime || 0;
+};
+
+//Ball instance
+var defaultBall = new Ball({x: 200});
+
+var displayBall = new Ball({
+    x: 144,
+    y: 357,
+});
+    
+var milesBall = new Ball({
+    x: 272,
+    y: 358,
+});
+
+var settingsBall = new Ball({
+    x: 140,
+    y: 377,
+    size: 50
+});
+
+//balls array
+var balls = [
+    defaultBall
+];
+
+//balls draw method
+Ball.prototype.draw = function() {
+    this.y = constrain(this.y, -200, 390 - this.size);
+    this.x = constrain(this.x, this.size - 30, 430 - this.size);
+    fill(255, 255, 255);
+    stroke(0, 0, 0);
+    strokeWeight(this.size * 0.03);
+    ellipse(this.x, this.y, this.size, this.size);
+    fill(0, 0, 0);
+    //middle hexagon
+    quad(this.x - this.size/6, this.y, this.x + this.size/6, this.y, this.x + this.size/10, this.y - this.size/6, this.x - this.size/10, this.y - this.size/6);
+    quad(this.x - this.size/6, this.y, this.x + this.size/6, this.y, this.x + this.size/10, this.y + this.size/6, this.x - this.size/10, this.y + this.size/6);
+    var offsetX = this.size * 0.34;
+    var offsetY = this.size * 0.45;
+    //bottom right hexagon
+    triangle(this.x - this.size/6 + offsetX, this.y + offsetY, this.x + this.size/15 + offsetX, this.y - this.size/6 + offsetY, this.x - this.size/10 + offsetX, this.y - this.size/6 + offsetY);
+    triangle(this.x - this.size/6 + offsetX, this.y - offsetY, this.x + this.size/17 + offsetX, this.y + this.size/6 - offsetY, this.x - this.size/10 + offsetX, this.y + this.size/6 - offsetY);
+    //top left hexagon
+    triangle(this.x + this.size/6 - offsetX, this.y - offsetY, this.x + this.size/10 - offsetX, this.y + this.size/6 - offsetY, this.x - this.size/16 - offsetX, this.y + this.size/6 - offsetY);
+    //bottom left hexagon
+    triangle(this.x + this.size/7 - offsetX, this.y + offsetY, this.x + this.size/10 - offsetX, this.y - this.size/6 + offsetY, this.x - this.size/16 - offsetX, this.y - this.size/6 + offsetY);
+};
+
+Ball.prototype.move = function() {
+    if (this.x < 400 && this.x > 0) {
+        this.x += this.xVelocity;
+    }
+    if (this.y + - this.size < 390) {
+        var t = (frameCount - this.collideTime) / 60;
+        if (this.yVelocity > 0) {
+            this.yVelocity -= 2.5 * t*t;
+        } else {
+            this.yVelocity -= 1 * t*t;
+        }
+    }
+    this.yVelocity = constrain(this.yVelocity, -37, 37);
+    this.y -= this.yVelocity;
+};
+
+Ball.prototype.groundCollide = function() {
+    this.collideTime = frameCount;
+    if (abs(this.yVelocity) < 100) {
+        this.yVelocity = -this.yVelocity / 3;
+    } else {
+        this.yVelocity = 30;
+    }
+    //println(frameCount - this.collideTime);
+};
+
+Ball.prototype.groundCollideDetect = function() {
+    if (this.y + this.size >= 390) {
+        //println('collide');
+        return true;
+    }
+};
+
+Ball.prototype.goal = function() {
+    if (!stopGoalTime) {
+        if (this.x > 360 && this.y > 230) {
+            sean.score ++;
+            goalTime = frameCount;
+            stopGoalTime = true;
+            //println("sean's goal");
+        }
+        else if (this.x < 40 && this.y > 230) {
+            miles.score ++;
+            goalTime = frameCount;
+            stopGoalTime = true;
+            //println("miles' goal");
+        }
+    }
+};
+
+Ball.prototype.goalReset = function() {
+    if (frameCount - goalTime === 90) {
+        this.x = 200;
+        this.y = 300;
+        this.xVelocity = 0;
+        stopGoalTime = false;
+        //println("goalReset");
+        return true;
+    }
+};
+
+Ball.prototype.netCollide = function() {
+    if (this.x > 360 && abs(243-this.y) < 11) {
+        this.yVelocity = 0;
+        if (this.y < 253 + this.size && this.yVelocity < 5) {
+            this.xVelcity = -5;
+            this.yVelocity = 10;
+
+        }
+    } 
+    if (this.x < 40 && abs(243-this.y) < 11) {
+        this.yVelocity = 0;
+        if (this.y < 253 + this.size && this.yVelocity < 5) {
+            this.xVelcity = 5;
+            this.yVelocity = 10;
+        }
+    }  
+};
+
+//Player Methods
+
 //draw Player method
 Player.prototype.drawCharacter = function() {
     this.x = constrain(this.x, 50, width - 50);
-    this.y = constrain(this.y, 0, height - 50);
+    this.y = constrain(this.y, 0, height - 60);
     this.drawCharacter();
 };
 
 //move Player methods
 Player.prototype.characterJump = function() {
-    if (this.y >= 100 && this.yVelocity < 0) {
+    if (this.y >= 147) {
         this.y -= this.jump;   
     }
     this.yVelocity += this.jump;
@@ -244,83 +453,391 @@ Player.prototype.fall = function() {
 };
 
 Player.prototype.left = function() {
-    this.x -= this.speed;
-    this.xVelocity -= this.speed;
+    if (this.x > 40) {
+        this.x -= this.speed;
+        this.xVelocity -= this.speed;
+    }
 };
 
 Player.prototype.right = function() {
-    this.x += this.speed;
-    this.xVelocity += this.speed;
+    if (this.x < 360) {
+        this.x += this.speed;
+        this.xVelocity += this.speed;
+    }
+};
+
+Player.prototype.kickDetect = function() {
+    //println("kickdetect");
+    if (sqrt(sq(this.x-defaultBall.x)+sq(this.y+70-defaultBall.y)) < 50) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+//Ball kick method
+Ball.prototype.kicked = function() {
+    //println("kick method");
+    for (var i in players) {
+        if (players[i].kickDetect()) {
+            //println(players[i].name + " kicked the ball");
+            if (this.x < players[i].x) {
+                this.xVelocity = -2 * players[i].kickPower;
+            }
+            else if (this.x > players[i].x) {
+                this.xVelocity = 2 * players[i].kickPower;
+            }
+            this.yVelocity += 6;
+        }
+    }
 };
 
 //draw shadow method
 Player.prototype.drawShadow = function() {
     var shadowSize = (this.y) / 6;
+    noStroke();
     fill(84, 84, 84, 100);
     ellipse(this.x, 387, shadowSize,shadowSize / 5); 
 };
 
+//Goal draw function
+var drawFrontOfGoal = function(side) {
+    
+    var x;
+    
+    if (side === 'left') {
+        x = -50;
+        //netting
+        for (var i = 0; i < 11; i++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
+            line(x + 20 - 4 * i, 256 + 12 * i, x + 68 - 1.5 * i, x + 276 + 12 * i);
+        }
+        for (var j = 0; j < 5; j++) {
+            line(x + j * 12 + 20, 265, x + j * 12, 388 + 2 * j);
+        }
+        for (var i = 0; i < 8; i++) {
+            stroke(56,56,56);
+            strokeWeight(2);
+            line(x + 67 - 7 * i, 227 + 5 * i, x + 89 - 2 * i, 234 + 4 * i);
+        }
+        for (var j = 0; j < 5; j++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
+            line(x + j * 12 + 20, 265, x + j * 9 + 60, 228 + 2 * j);
+            
+        //bars
+        stroke(0, 0, 0);
+        strokeWeight(10); 
+        line(x - 34, 390,x + 20, 261); 
+        line(x + 20, 261, x + 72, 264);
+        line(x + 72, 264, x + 58, 394);
+        line(x + 20, 261, x + 58, 230);
+        line(x + 72, 264, x + 104, 228);
+        line(x + 58, 230, x + 104, 228);
+        line(x - 34, 386, x + 58, 394);
+        stroke(255, 255, 255);
+        strokeWeight(7);
+        line(x - 34, 390, x + 20, 261); 
+        line(x + 20, 261, x + 72, 264);
+        line(x + 72, 264, x + 58, 394);
+        line(x + 20, 261, x + 58, 230);
+        line(x + 72, 264, x + 104, 228);
+        line(x + 58, 230, x + 104, 228);
+        line(x - 34, 386, x + 58, 394);
+        }
+    }
+    else if (side === 'right') {
+        x = 450;
+        //netting
+        for (var i = 0; i < 11; i++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
+            line(x - 20 + 4 * i, 256 + 12 * i, x - 68 + 1.5 * i, 276 + 12 * i);
+        }
+        for (var j = 0; j < 5; j++) {
+            line(x - j * 12 - 20, 265, x - j * 12, 388 + 2 * j);
+        }
+        for (var i = 0; i < 8; i++) {
+            stroke(56,56,56);
+            strokeWeight(2);
+            line(x - 67 + 7 * i, 227 + 5 * i, x - 89 + 2 * i, 234 + 4 * i);
+        }
+        for (var j = 0; j < 5; j++) {
+            line(x - j * 12 - 20, 265, x - j * 9 - 60, 228 + 2 * j);
+        }
+
+        //bars
+        stroke(0, 0, 0);
+        strokeWeight(10); 
+        line(x + 34, 390,x -20, 261); 
+        line(x - 20, 261, x - 72, 264);
+        line(x - 72, 264, x - 58, 394);
+        line(x - 20, 261, x - 58, 230);
+        line(x - 72, 264, x - 104, 228);
+        line(x - 58, 230, x - 104, 228);
+        line(x + 34, 386, x - 58, 394);
+        stroke(255, 255, 255);
+        strokeWeight(7);
+        line(x + 34, 390, x -20, 261); 
+        line(x - 20, 261, x - 72, 264);
+        line(x - 72, 264, x - 58, 394);
+        line(x - 20, 261, x - 58, 230);
+        line(x - 72, 264, x - 104, 228);
+        line(x - 58, 230, x - 104, 228);
+        line(x + 34, 386, x - 58, 394);
+    }
+}; 
+
+//draw back of goal fucntion allows things to go into goals
+var drawBackOfGoal = function(side) {
+    
+    var x;
+    
+    if (side === 'left') {
+        x = -50;
+        //netting
+        for (var i = 0; i < 11; i++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
+            line(x + 67 - 4 * i, 227 + 10 * i, x + 100 - 1.5 * i, 229 + 10 * i);
+        }
+        for (var j = 0; j < 7; j++) {
+            line(x + j * 8 + 53, 233, x + j * 8 + 30, 337 + 2 * j);
+        }
+        for (var i = 0; i < 7; i++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
+            line(x + 21 - 4 * i, 258 + 15 * i, x + 49 - 3.1 * i, 232 + 15 * i);
+        }
+        for (var j = 0; j < 4; j++) {
+            line(x + j * 7 + 27, 254 - j * 7, x + j * 8 - 8, 361 - 8 * j);
+        } 
+    }
+    else if (side === 'right') {
+        x = 450;
+        //netting
+        for (var i = 0; i < 11; i++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
+            line(x - 67 + 4 * i, 227 + 10 * i, x - 100 + 1.5 * i, 229 + 10 * i);
+        }
+        for (var j = 0; j < 7; j++) {
+            line(x - j * 8 - 53, 233, x - j * 8 - 30, 337 + 2 * j);
+        }
+        for (var i = 0; i < 7; i++) {
+            stroke(56, 56, 56);
+            strokeWeight(2);
+            line(x - 21 + 4 * i, 258 + 15 * i, x - 49 + 3.1 * i, 232 + 15 * i);
+        }
+        for (var j = 0; j < 4; j++) {
+            line(x - j * 7 - 27, 254 - j * 7, x - j * 8 + 8, 361 - 8 * j);
+        } 
+    }
+    
+    if (side === 'left') {
+        x = -50;
+        //bars
+        stroke(0, 0, 0);
+        strokeWeight(10);
+        line(x + 104, 228, x + 88, 347);
+        line(x + 58, 230, x + 18, 340);
+        line(x + 18, 340, x - 5, 369);
+        line(x + 88, 347, x + 18, 340);
+        stroke(255, 255, 255);
+        strokeWeight(7);
+        line(x + 104, 228, x + 88, 347);
+        line(x + 58, 230, x + 18, 340);
+        line(x + 18, 340, x - 5, 369);
+        line(x + 88, 347, x + 18, 340);
+    }
+    else if (side === 'right') {
+        x = 450;
+        //bars
+        stroke(0, 0, 0);
+        strokeWeight(10);
+        line(x - 104, 228, x - 88, 347);
+        line(x - 58, 230, x - 18, 340);
+        line(x - 18, 340, x + 5, 369);
+        line(x - 88, 347, x - 18, 340);
+        stroke(255, 255, 255);
+        strokeWeight(7);
+        line(x - 104, 228, x - 88, 347);
+        line(x - 58, 230, x - 18, 340);
+        line(x - 18, 340, x + 5, 369);
+        line(x - 88, 347, x - 18, 340);
+    }
+};
+
+//timer function
+
+
+var drawScoreBoard = function() {
+    stroke(255, 255, 255);
+    strokeWeight(7);
+    fill(255, 0, 0);
+    rect(262, 0, 135, 63);
+    fill(255, 255, 255);
+    textSize(20);
+    text("Timer:", 286, 5);
+    fill(234, 0, 255);
+    rect(0, 0, 147, 63);
+    fill(250, 250, 250);
+    text("Score:", 3, 5);
+    textSize(40);
+    text(sean.score + " - " + miles.score, 30, 19); 
+};
+
+//Make the splash screen
+var drawSplash = function(){
+    background(43, 166, 204);
+    textAlign(LEFT,TOP);      
+    fill(0, 255, 60);
+    rect(0, height*0.90, width, height*0.10);
+    seanBitmoji(176, 326, 60);
+    milesDrawBitmoji(233, 298, 40);
+    fill(179, 39, 186);
+    textSize(40);
+    fill(3, 3, 3);
+    rect(0, 0, 399, 75);
+    fill(247, 252, 247);
+    text("Head Soccer!", 81, 13);
+    textSize(15);
+    text("Score as many goals as you can in two minutes!", 39, 173);
+    image(getImage("cute/TreeShort"), 31, 324, 42, 78);
+    image(getImage("cute/TreeTall"), 334, 324, 42, 78);
+    startButton.draw();
+    settingsButton.draw();
+    displayBall.draw();
+    milesBall.draw();
+};
+
+var drawSettings = function() {
+    scene = 2;
+    background(29, 193, 222);
+    textSize(40);
+    fill(5, 5, 5);
+    text("Goals of the Game:  ", 33, 22);
+    textSize(15);
+    text("Score more goals than your opponent in two minutes!", 9, 78);
+    textSize(12);
+    text("To score, kick the ball with your character and get it into the net!", 9, 102);
+    textSize(30);
+    fill(255, 0, 34);
+    text("How To Play: ", 9, 130);
+    textSize(15);
+    text("If you are Sean, use", 9, 167);
+    text("W to jump, A to move left, and D to move right", 9, 187);
+    text("If you are Miles use", 10, 207);
+    text("Up arrow to jump, Right Arrow to move right,", 12, 227);
+    text("and Left Arrow to move left", 12, 247);
+    seanBitmoji(63, 328, 125);
+    milesDrawBitmoji(212, 277, 75);
+    backButton.draw();
+    settingsBall.draw();
+};
+
+mouseClicked = function(){
+    if(scene === 0) {
+        startButton.handleMouseClick();
+        settingsButton.handleMouseClick();
+        
+    }
+    else if (scene === 2) { 
+        backButton.handleMouseClick();
+        
+    }
+}; 
+
 draw = function() {
-    //Background
-    background(0, 64, 255);
+    if (scene === 0) {
+        drawSplash();
+    }
+    else if (scene === 1) {
+        background(0, 64, 255);
+        
+        drawScoreBoard();
+        
+        //grass
+        image(getImage("cute/GrassBlock"), -10, 274, 422, 166);
     
-    for (var i = 0; i < 50; i++) {
-        image(getImage("cute/GrassBlock"), -2 +i *25, 350, 50, 50);
-        image(getImage("cute/CharacterBoy"), -4 + i *25, 88, 25, 50);
-        image(getImage("space/girl1"), -21 + i *25, 58, 75, 75);
-        image(getImage("cute/CharacterBoy"), -4 + i *25, 37, 25, 50);
-        image(getImage("space/girl3"), -20 + i *25, 111, 75, 75);
-        image(getImage("space/background"), 0 , -1, 410, 45);
-        image(getImage("creatures/Hopper-Cool"), 0 + i *25, 166, 25, 25);
-}
-
-for ( var j = 0; j < 20; j++) {
-    image(getImage("cute/Star"), round(random(4, 380)), round(random( -15, 20)), 25, 25);
-}    
-
+        //call in draw goal functions
+        drawBackOfGoal('left');
+        drawBackOfGoal('right');
+        
+        //moving for sean
+        if (keyIsPressed) {
+            //jumping
+            if (key.toString() === 'w') {
+                sean.characterJump();
+            }
+            //moving right
+            if (key.toString() === 'd') {
+                sean.right();
+            }
+            else if (key.toString() === 'a') {
+                sean.left();
+            }
+        }
+        
+        //moving for miles
+        if (keyIsPressed) {
+            //jumping
+            if (keyCode === UP) {
+                miles.characterJump();
+            }
+             //moving right
+            if (keyCode === 39) {
+                miles.right();
+            }
+            //moving left
+            else if (keyCode === 37) {
+                miles.left();
+            }
+        }
+        
+        //continuos things happening to players
+        for (var i in players) { 
+            if (players[i].y <= 308) {
+                players[i].fall();
+            }
+            players[i].drawShadow();
+            players[i].drawCharacter();
+        }
+        if (defaultBall.goalReset() === true) {
+            miles.y = 309;
+            miles.x = 300;
+            sean.y = 309;
+            sean.x = 100;
+        }
+        
+        //continuous things happening to ball
+        if (defaultBall.groundCollideDetect()) {
+            defaultBall.groundCollide();
+        }
+        
+        defaultBall.kicked();
+        defaultBall.goal();
+        defaultBall.goalReset();
+        defaultBall.netCollide();
+        defaultBall.move();
+        defaultBall.draw();
     
-    //moving for sean
-    if (keyIsPressed) {
-        //jumping
-        if (key.toString() === 'w') {
-            sean.characterJump();
-        }
-        //moving right
-        if (key.toString() === 'd') {
-            sean.right();
-        }
-        else if (key.toString() === 'a') {
-            sean.left();
-        }
+        drawFrontOfGoal('left');
+        drawFrontOfGoal('right');
     }
     
-    //moving for miles
-    if (keyIsPressed) {
-        //jumping
-        if (keyCode === UP) {
-            miles.characterJump();
-        }
-         //moving right
-        if (keyCode === 39) {
-            miles.right();
-        }
-        //moving left
-        else if (keyCode === 37) {
-            miles.left();
-        }
+    else if (scene === 2) {
+        drawSettings();
     }
-    
-    
-    //continuos things happening to players
-    for (var i in players) { 
-        if (players[i].y <= 314) {
-            players[i].fall();
-        }
-        players[i].drawShadow();
-    }
-
-    sean.drawCharacter();
-    miles.drawCharacter();
-
-    //println(miles.y);
+/*
+    //debug
+    println(miles.name + " is " + dist(miles.x, miles.y+70, defaultBall.x, defaultBall.y));
+    println("square " + sqrt(sq(miles.x-defaultBall.x)+sq(miles.y+70-defaultBall.y)));
+    //players[i].kickDetect();
+    */
+    //println("goalTime " + goalTime);
+    //println(frameCount);
+    //strokeWeight(5);
+    //line(0, 243, 400, 243);
 };
