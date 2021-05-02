@@ -1,0 +1,368 @@
+//Global  Variables
+var scene = 0;
+
+var myBitmoji = function(x, y, h){
+noStroke();
+fill(255,205,148); //skin tone
+ellipse(x-(h/150), y-(h/150), h/150*87, h/150*100); //head
+fill(255, 255, 255);
+fill(29, 193, 222);
+arc(x-(h/150*42), y+(h/150*37), h/150*28, h/150*55, h/150*0, h/150*361); //left chisel
+arc(x+(h/150*42), y+(h/150*37), h/150*28, h/150*55, h/150*0, h/150*360); //right chisel
+fill(150, 75, 0);//brown hair
+quad(x-(h/150*50), y-(h/150), x-(h/150*37), y-(h/150*32), x-(h/150), y-(h/150*50), x-(h/150*30), y+(h/150*12));//left hair
+quad(x+(h/150*49), y-(h/150*2), x+(h/150*34), y-(h/150*32), x+(h/150*13), y-(h/150*50), x+(h/150*35), y+(h/150*14));//right hair
+ellipse(x-(h/150), y-(h/150*37), h/150*62, h/150*28); //top hair
+stroke(0, 0, 0);
+fill(150, 75, 0);//brown eyes fill
+ellipse(x-(h/150*10), y-(h/150), h/150*6, h/150*4); //left eye
+ellipse(x+(h/150*12), y-(h/150), h/150*6, h/150*4); //right eye
+fill(255,205,148); //skin tone
+bezier(x,y,x+(h/150*21),y+h/150*22,x-h/150*8,y+h/150*20,x-h/150*4,y+h/150*15);//nose
+
+fill(255, 255, 255);//white fill for teeth
+arc(x+(h/150*1), y+(h/150*25), h/150*30, h/150*13,1,180);//mouth
+line(x-(h/150*15), y+(h/150*26), x+(h/150*16), y+(h/150*24)); //top of mouth
+fill(63, 51, 77);
+quad(x-(h/150*35), y+(h/150*82), x+(h/150*45), y+(h/150*83), x+(h/150*45), y+(h/150*69), x-(h/150*39), y+(h/150*35));
+quad(x-(h/150*31), y+(h/150*80), x+(h/150*52), y+(h/150*25), x+(h/150*48), y+(h/150*85), x-(h/150*33), y+(h/150*83));
+fill(5, 5, 5);
+
+arc(x+(h/150*2), y-(h/150*41), h/150*63, h/150*29, 182, 360);
+rect(x-(h/150*31), y-(h/150*34), h/150*66, h/150*16);
+rect(x-(h/150*32),y-(h/150*29),h/150*23,h/150*-13);
+rect(x+(h/150*15), y-(h/150*28), h/150*19, h/150*-13);
+fill(150, 75, 0);
+fill(43, 240, 73);
+textSize(h/150*22);
+text("SF", x-(h/150*11),y+(h/150*62),h/150*265,h/150*220);
+
+};
+//Bitmoji Code
+var milesDrawBitmojiBody=function(x,y,h){
+//body,coat
+strokeWeight(h*0.03);
+fill(22,87,24);
+rect(x-h*0.62,y+h*0.84,h*1.24,h*0.76,h*0.27);
+
+//hood
+fill(22, 87, 24);
+noStroke();
+rect(x-h*0.33,y+h*0.36,h*0.66,h*0.675,h*0.20);
+ellipse(x,y+h*0.43,h*0.68,h*0.84);
+
+//initials
+//M
+strokeWeight(h*0.04);
+stroke(0, 153, 255);
+line(x-h*0.54,y+h*1.40,x-h*0.43,y+h*1.06);
+line(x-h*0.43,y+h*1.06,x-h*0.32,y+h*1.40);
+line(x-h*0.32,y+h*1.40,x-h*0.21,y+h*1.06);
+line(x-h*0.21,y+h*1.06,x-h*0.10,y+h*1.40);
+//W
+line(x+h*0.10,y+h*1.06,x+h*0.21,y+h*1.40);
+line(x+h*0.21,y+h*1.40,x+h*0.32,y+h*1.06);
+line(x+h*0.32,y+h*1.06,x+h*0.43,y+h*1.40);
+line(x+h*0.43,y+h*1.40,x+h*0.54,y+h*1.06);
+
+noStroke();
+};
+var milesDrawBtimojiHead=function(x,y,h){
+//head
+noStroke();
+fill(235, 191, 97);
+ellipse(x,y+h*0.47,h*0.55,h*0.70);
+
+//eyes
+strokeWeight(h*0.015);
+stroke(0,0,0);
+fill(255, 255, 255);
+ellipse(x-h*0.11,y+h*0.43,h*0.10,h*0.06);//whites
+ellipse(x+h*0.11,y+h*0.43,h*0.10,h*0.06);
+//iris
+noStroke();
+fill(21, 57, 130);
+ellipse(x-h*0.11,y+h*0.43,h*0.04,h*0.04);
+ellipse(x+h*0.105,y+h*0.43,h*0.04,h*0.04);
+//pupils
+fill(0,0,0);
+ellipse(x-h*0.11,y+h*0.43,h*0.01,h*0.01);
+ellipse(x+h*0.11,y+h*0.43,h*0.01,h*0.01);
+
+//eye brows
+stroke(66, 24, 1);
+strokeWeight(h*0.015);
+fill(0,0,0,0);
+arc(x-h*0.12,y+h*0.42,h*0.15,h*0.12,212,339);
+arc(x+h*0.11,y+h*0.42,h*0.15,h*0.17,197,331);
+
+//furrowed brow
+stroke(41, 27, 8);
+strokeWeight(h*0.005);
+fill(245, 207, 147);
+arc(x+h*0.08,y+h*0.28,h*0.12,h*0.02,-180,0); 
+arc(x+h*0.07,y+h*0.26,h*0.12,h*0.02,-170,0); 
+arc(x+h*0.08,y+h*0.30,h*0.11,h*0.02,-180,0); 
+
+//hair
+noStroke();
+fill(102, 41, 8);
+arc(x-h*0.04,y+h*0.25,h*0.23,h*0.24,68,303);
+rect(x-h*0.17,y+h*0.15,h*0.17,h*0.13,10);
+ellipse(x+h*0.03,y+h*0.17,h*0.23,h*0.09);
+
+//shadows in hood
+fill(0, 0, 0);
+rect(x-h*0.23,y+h*0.65,h*0.46,h*0.25);
+stroke(0, 0, 0);
+strokeWeight(h*0.04);
+line(x-h*0.24,y+h*1.00,x-h*0.27,y+h*0.44);
+line(x+h*0.24,y+h*1.00,x+h*0.27,y+h*0.44);
+fill(235, 191, 97,0);
+strokeWeight(h*0.05);
+arc(x,y+h*0.49,h*0.53,h*0.76,190,350);
+
+
+//zipper
+fill(0,0,0);
+stroke(2);
+strokeWeight(h*0.05);
+line(x,y+h*1.50,x,y+h*0.74);
+
+//neck
+noStroke();
+fill(133, 102, 53);
+rect(x-h*0.14,y+h*0.72,h*0.27,h*0.20);
+
+//collar
+stroke(0, 0, 0);
+fill(22, 87, 24,0);
+arc(x,y+h*0.83,h*0.50,h*0.17,-20,200);
+
+
+//nose
+strokeWeight(h*0.01);
+stroke(186, 104, 31);
+fill(0,0,0,0);
+arc(x,y+h*0.53,h*0.07,h*0.15,-192,24);
+
+//mask
+stroke(0, 0, 0);
+fill(56, 49, 49);
+arc(x,y+h*0.485,h*0.49,h*0.71,5,175);
+stroke(207, 142, 37);
+strokeWeight(h*0.05);
+point(x+h*0.14,y+h*0.56);
+point(x-h*0.09,y+h*0.64);
+point(x+h*0.16,y+h*0.66);
+point(x-h*0.16,y+h*0.56);
+point(x,y+h*0.54);
+point(x+h*0.09,y+h*0.76);
+point(x-h*0.09,y+h*0.74);
+point(x+h*0.05,y+h*0.66);
+stroke(0,0,0);
+strokeWeight(h*0.03);
+line(x-h*0.27,y+h*0.53,x,y+h*0.50);
+line(x+h*0.27,y+h*0.53,x,y+h*0.50);
+noStroke();
+
+};
+var milesDrawBitmoji=function(bitmojiX,bitmojiY,bitmojiH){
+    noStroke();
+    milesDrawBitmojiBody(bitmojiX,bitmojiY,bitmojiH);
+    milesDrawBtimojiHead(bitmojiX,bitmojiY,bitmojiH);
+    //stroke(255, 0, 0);
+    //line(bitmojiX-30, bitmojiY + 40, bitmojiX + 30, bitmojiY + 40);
+    //line(bitmojiX, bitmojiY, bitmojiX, bitmojiY + 80);
+};
+//Button code from khan
+var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+};
+
+//Method to draw button
+Button.prototype.draw = function() {
+    fill(0, 234, 255);
+            rectMode(CORNER);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+//Method to check if mouse is clicked inside the button
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+//Function that produces an onclick if the button is pressed on
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+ 
+//start button
+var startButton = new Button({
+    x: 96,
+    y: 105,
+    width: 75,
+    label: "Start",
+    onClick: function() {
+        scene = 1;}
+});
+
+var settingsButton = new Button({
+    x: 230,
+    y: 105,
+    width: 87,
+    label: "Settings",
+    onClick: function() {
+        scene = 2;}
+});
+var backButton = new Button({
+    x: 291,
+    y: 321,
+    width: 69,
+    label: "Back",
+    onClick: function() {
+        scene = 0;}
+});
+
+mouseClicked = function(){
+    if(scene === 0)
+    {startButton.handleMouseClick();}
+    else if (scene === 0)
+    {settingsButton.handleMouseClick();}
+    else if (scene === 2)
+    {backButton.handleMouseClick();}
+}; 
+
+var Ball = function(config) {
+    this.x  = config.x || 200;
+    this.y = config.y || 308;
+    this.size = config.size || 30;
+    this.xVelocity = config.xVelocity || 0;
+    this.yVelocity = config.yVelocity || 0;
+    this.yVeloctiyTemp = config.yVelocityTemp || 0;
+    this.collideTime = config.collideTime || 0;
+};
+
+//Ball instance
+var displayBall = new Ball({
+    x: 144,
+    y: 357,
+});
+    
+var milesBall = new Ball({
+    x: 272,
+    y: 358,
+});
+
+var settingsBall = new Ball({
+    x: 140,
+    y: 377,
+});
+
+var defaultBall = new Ball({size: 30});
+
+var balls = [
+    defaultBall
+    ];
+
+Ball.prototype.draw = function() {
+    constrain(this.y, -200, 390 - this.size);
+    constrain(this.x, this.size, 400 - this.size);
+    fill(255, 255, 255);
+    stroke(0, 0, 0);
+    strokeWeight(this.size * 0.03);
+    ellipse(this.x, this.y, this.size, this.size);
+    fill(0, 0, 0);
+    //middle hexagon
+    quad(this.x - this.size/6, this.y, this.x + this.size/6, this.y, this.x + this.size/10, this.y - this.size/6, this.x - this.size/10, this.y - this.size/6);
+    quad(this.x - this.size/6, this.y, this.x + this.size/6, this.y, this.x + this.size/10, this.y + this.size/6, this.x - this.size/10, this.y + this.size/6);
+    var offsetX = this.size * 0.34;
+    var offsetY = this.size * 0.45;
+    //bottom right hexagon
+    triangle(this.x - this.size/6 + offsetX, this.y + offsetY, this.x + this.size/15 + offsetX, this.y - this.size/6 + offsetY, this.x - this.size/10 + offsetX, this.y - this.size/6 + offsetY);
+    triangle(this.x - this.size/6 + offsetX, this.y - offsetY, this.x + this.size/17 + offsetX, this.y + this.size/6 - offsetY, this.x - this.size/10 + offsetX, this.y + this.size/6 - offsetY);
+    //top left hexagon
+    triangle(this.x + this.size/6 - offsetX, this.y - offsetY, this.x + this.size/10 - offsetX, this.y + this.size/6 - offsetY, this.x - this.size/16 - offsetX, this.y + this.size/6 - offsetY);
+    //bottom left hexagon
+    triangle(this.x + this.size/7 - offsetX, this.y + offsetY, this.x + this.size/10 - offsetX, this.y - this.size/6 + offsetY, this.x - this.size/16 - offsetX, this.y - this.size/6 + offsetY);
+};
+
+//Make the splash screen
+var drawSplash = function(){
+    background(43, 166, 204);
+    textAlign(LEFT,TOP);      
+    fill(0, 255, 60);
+    rect(0, height*0.90, width, height*0.10);
+    myBitmoji(176, 326, 60);
+    milesDrawBitmoji(233, 298, 40);
+    fill(179, 39, 186);
+    textSize(40);
+    fill(3, 3, 3);
+    rect(0, 0, 399, 75);
+    fill(247, 252, 247);
+    text("Head Soccer!", 81, 13);
+    textSize(15);
+    text("Score as many goals as you can in two minutes!", 39, 173);
+    image(getImage("cute/TreeShort"), 31, 324, 42, 78);
+    image(getImage("cute/TreeTall"), 334, 324, 42, 78);
+    startButton.draw();
+    settingsButton.draw();
+    displayBall.draw();
+    milesBall.draw();
+};
+
+
+var drawSettings = function() {
+    scene = 2;
+    background(29, 193, 222);
+    textSize(40);
+    fill(5, 5, 5);
+    text("Goals of the Game:  ", 33, 50);
+    textSize(15);
+    text("Score more goals than your opponent in two minutes!", 9, 78);
+    textSize(12);
+    text("To score, kick the ball with your character and get it into the net!", 9, 102);
+    textSize(30);
+    fill(255, 0, 34);
+    text("How To Play: ", 9, 153);
+    textSize(15);
+    text("If you are Sean, use", 9, 190);
+    text("W to jump, A to move left, and D to move right", 9, 210);
+    text("If you are Miles use", 10, 234);
+    text("Up arrow to jump, Right Arrow to move right,", 12, 255);
+    text("and Left Arrow to move left", 12, 275);
+    myBitmoji(63, 328, 125);
+    milesDrawBitmoji(212, 277, 75);
+    backButton.draw();
+    settingsBall.draw();
+};
+
+
+draw = function() {
+    if (scene === 2)
+    {
+        drawSettings();
+    }
+    else if (scene === 2 & backButton.handleMouseClick)
+    {
+        drawSplash();
+    }
+};
+
+drawSplash();
+
+ 
