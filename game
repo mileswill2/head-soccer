@@ -221,6 +221,7 @@ var goalTime;
 var stopGoalTime = null;
 var scene = 0;
 var startTime;
+var winnerCur;
 
 //timer function
 var timer = function() {
@@ -484,13 +485,17 @@ Ball.prototype.goalReset = function() {
 };
 
 Ball.prototype.netCollide = function() {
+    //if ball is on right side and in goal the velocity becomes 0 
     if (this.x + this.size > 360 && abs(243-this.y) < 20) {
         this.yVelocity = 0;
+        //If above goal velocity becomes upwards and towards center
+        //range of y velocity given to make algorithm more forgiving
         if (this.y < 253 + this.size && this.yVelocity < 5) {
             this.xVelcity = -5;
             this.yVelocity = 10;
         }
     } 
+    //Same for left goal
     if (this.x + this.size < 40 && abs(243-this.y) < 20) {
         this.yVelocity = 0;
         if (this.y < 253 + this.size && this.yVelocity < 5) {
@@ -514,20 +519,18 @@ PowerUp.prototype.draw = function() {
     if (this.shown === true) {
         if (this.type === 0) {
             //draw Speed power up
-            fill(255, 204, 0);
             drawLightning(this.x, this.y, 60);
         }
         else if (this.type === 1) {
             //draw strength power up
-            fill(255, 0, 0);
             drawStrength(this.x, this.y, 60);
         }
         else if (this.type === 2) {
             //draw size power up
-            fill(22, 37, 153);
             drawSize(this.x, this.y, 60);
         }
     }
+    //if shown is false powerup is moved of screen
     else if (this.shown === false) {
         this.y = 600;
     }
@@ -556,22 +559,27 @@ Player.prototype.drawCharacter = function() {
 
 //move Player methods
 Player.prototype.characterJump = function() {
+    //limits y movement to below stadium
     if (this.y >= 147) {
         this.y -= this.jump;   
     }
     this.yVelocity += this.jump;
+    //jump time used for acceleration due to "gravity"
     this.jumpTime = frameCount;
 };
 
 Player.prototype.fall = function() {
     if (this.y <= 343) {
         var t = (frameCount - this.jumpTime) / 60;
+        //function for acceleration due to "gravity"
         this.yVelocity = - 20 * t*t;
+        //change in y is negative y Velocity
         this.y -= this.yVelocity;
     }
 };
 
 Player.prototype.left = function() {
+    //limited to the left side
     if (this.x > 40) {
         this.x -= this.speed;
         this.xVelocity -= this.speed;
@@ -579,6 +587,7 @@ Player.prototype.left = function() {
 };
 
 Player.prototype.right = function() {
+    //limited to right side
     if (this.x < 360) {
         this.x += this.speed;
         this.xVelocity += this.speed;
@@ -586,7 +595,7 @@ Player.prototype.right = function() {
 };
 
 Player.prototype.kickDetect = function() {
-    //println("kickdetect");
+    //distance between ball and center of player within 50 of eachother
     if (sqrt(sq(this.x-defaultBall.x)+sq(this.y+70-defaultBall.y)) < 50) {
         return true;
     } else {
@@ -596,6 +605,7 @@ Player.prototype.kickDetect = function() {
 
 //draw shadow of player method
 Player.prototype.drawShadow = function() {
+    //same as ball shadow method, with altered size
     var shadowSize = (this.y) / 6;
     noStroke();
     fill(84, 84, 84, 100);
@@ -604,32 +614,37 @@ Player.prototype.drawShadow = function() {
 
 Player.prototype.powerUpCollision = function() {
     for (var i in powerUps) {
+        //variable type to simplify method. Type corresponds to effect
         var type = powerUps[i].type;
-        //sqrt(sq(this.x-defaultBall.x)+sq(this.y+70-defaultBall.y)) < 50
+        //if power up is touched and the player does not already have a powerup 
         if (dist(this.x, this.y+70, powerUps[i].x, powerUps[i].y) < 30 && this.powerUpCollected === false) {
             this.powerUpCollected = true;
+            //used to limit amout of time of power up's effect
             this.powerUpsTime = frameCount;
             powerUps[i].shown = false;
             this.powerUpsType = type;
-            //println(this.name + " power up collide");
-            //println(this.powerUpCollected + " " + this.name);
         }
     }
 };
 
 Player.prototype.poweredUp = function() {
     var type = this.powerUpsType;
+    //If it has been less than 5 seconds the power up will continue to have affect
     if (floor((frameCount - this.powerUpsTime)/60) <= 5) {
+        //speed
         if (type === 0) {
             this.speed = 5;
         }
+        //strength
         else if (type === 1) {
             this.kickPower = 3;
         }
+        //size
         else if (type === 2) {
             defaultBall.size = 50;
         }
     }
+    //after 5 seconds power up is disabled and player and ball are reset
     else if (floor((frameCount - this.powerUpsTime)/60) > 5) {
         this.powerUpCollected = false;
         this.poweUpsType = null;
@@ -653,6 +668,7 @@ var startButton = new Button({
     }
 });
 
+//settings button appears on splash screen
 var settingsButton = new Button({
     x: 230,
     y: 105,
@@ -662,6 +678,7 @@ var settingsButton = new Button({
         scene = 2;}
 });
 
+//back button appears on settings screen. Goes back to splash screen
 var backButton = new Button({
     x: 291,
     y: 321,
@@ -671,6 +688,7 @@ var backButton = new Button({
         scene = 0;}
 });
 
+//Restart Button appears at end of game. Goes back to start of game
 var restartButton = new Button({
     x: 163,
     y: 269,
@@ -682,13 +700,17 @@ var restartButton = new Button({
         powerUps = [];
         scene = 1;
         startTime = frameCount;
+        defaultBall.xVelocity = 0;
         defaultBall.yVelocity = 0;
         defaultBall.x = 200;
         defaultBall.y = 300;
     }
 });
 
-//Goal draw function
+//Goal draw functions
+//Seperated to give three dimensions of ball or characters being behind or infornt of goal
+
+//Closest part of goal with parameter for which side
 var drawFrontOfGoal = function(side) {
     
     var x;
@@ -696,6 +718,7 @@ var drawFrontOfGoal = function(side) {
     if (side === 'left') {
         x = -50;
         //netting
+        //linear functions define start and end of lines to draw netting
         for (var i = 0; i < 11; i++) {
             stroke(56, 56, 56);
             strokeWeight(2);
@@ -704,9 +727,9 @@ var drawFrontOfGoal = function(side) {
         for (var j = 0; j < 5; j++) {
             line(x + j * 12 + 20, 265, x + j * 12, 388 + 2 * j);
         }
-        
             
         //bars
+        //black drawn under white to give "stroke" to lines for contrast
         stroke(0, 0, 0);
         strokeWeight(10);
         line(x + 20, 261, x + 72, 264);
@@ -891,6 +914,7 @@ var drawBackOfGoal = function(side) {
     }
 };
 
+//scoreboard function
 var drawScoreBoard = function() {
     stroke(255, 255, 255);
     strokeWeight(7);
@@ -910,7 +934,7 @@ var drawScoreBoard = function() {
     text(sean.score + " - " + miles.score, 18, 19); 
 };
 
-//Make the splash screen
+//Make the splash screen with start and settings button 
 var drawSplash = function(){
     background(43, 166, 204);
     textAlign(LEFT,TOP);      
@@ -925,7 +949,7 @@ var drawSplash = function(){
     fill(247, 252, 247);
     text("Head Soccer!", 81, 13);
     textSize(27);
-    text("Score as many goals as you can in two minutes!", 59, 173, 300, 100);
+    text("Score as many goals as you can in 90 seconds!", 59, 173, 300, 100);
     image(getImage("cute/TreeShort"), 31, 324, 42, 78);
     image(getImage("cute/TreeTall"), 334, 324, 42, 78);
     startButton.draw();
@@ -934,6 +958,7 @@ var drawSplash = function(){
     milesBall.draw();
 };
 
+//settings screens with back button
 var drawSettings = function() {
     scene = 2;
     background(29, 193, 222);
@@ -959,7 +984,9 @@ var drawSettings = function() {
     settingsBall.draw();
 };
 
+//draws end message over game field and draws restart button
 var drawEndScreen = function() {
+    //variable for winner at end of game to display who won
     var winner;
     if (miles.score === sean.score) {
         winner = "draw";
@@ -990,11 +1017,14 @@ var drawEndScreen = function() {
     restartButton.draw();
 };
 
+//sets array 
 var audienceArray = [];
+//fills array with color of random, but light colors
 for (var i = 0; i < 100; i ++) {
     audienceArray.push(color(random(100,255), random(100,255), random(100,255)));
 }
 
+//Handles mouseclicks depending on scene
 mouseClicked = function(){
     if(scene === 0) {
         startButton.handleMouseClick();
@@ -1013,11 +1043,13 @@ draw = function() {
         drawSplash();
     }
     else if (scene === 1) {
+        //timer doesn't need to work in any other scene
         timer();
         
         background(0, 64, 255);
         
         //Crowd
+        //Makes grid of circles using audience array colors
         for ( var j = 1; j < 5; j++) {
             for ( var i = 1; i < 20; i++) {
                 stroke(255, 255, 255);
@@ -1037,10 +1069,27 @@ draw = function() {
         drawBackOfGoal('left');
         drawBackOfGoal('right');
         
+        //continuos for powerUps
+        powerUpGenerate();
+        for (var i in powerUps) {
+            powerUps[i].draw();
+        }
+        
         //Player Movement
+        //winnerCur used to translate which player can move when ball is at x = 200
+        //Player can only move if ball is on their side of the field
         
         //moving for sean
-        if (keyIsPressed) {
+        if (sean.score > miles.score) {
+            winnerCur = 201;
+        }
+        else if (miles.score > sean.score) {
+            winnerCur = 199;
+        }
+        else {
+            winnerCur = 201;
+        }
+        if (keyIsPressed && defaultBall.x < winnerCur) {
             //jumping
             if (key.toString() === 'w') {
                 sean.characterJump();
@@ -1055,7 +1104,7 @@ draw = function() {
         }
         
         //moving for miles
-        if (keyIsPressed) {
+        if (keyIsPressed && defaultBall.x > winnerCur) {
             //jumping
             if (keyCode === UP) {
                 miles.characterJump();
@@ -1072,6 +1121,7 @@ draw = function() {
         
         //continuos things happening to players
         for (var i in players) { 
+            //Only call fall method when above y = 308
             if (players[i].y <= 308) {
                 players[i].fall();
             }
@@ -1079,7 +1129,7 @@ draw = function() {
             players[i].drawCharacter();
             players[i].powerUpCollision();
             players[i].poweredUp();
-            //resets score after restart because onClick for restartButton was not doing it
+            //resets score after restart because onClick for restartButton was not               doing it
             if ((frameCount - startTime)/60 < 1) {
                 players[i].score = 0;
             }
@@ -1095,14 +1145,14 @@ draw = function() {
         if (defaultBall.groundCollideDetect()) {
             defaultBall.groundCollide();
         }
-        
         defaultBall.kicked();
         defaultBall.goal();
         defaultBall.goalReset();
         defaultBall.netCollide();
         defaultBall.move();
         defaultBall.drawShadow();
-        //Places Ball in or ontop of goal
+        
+        //Places Ball in or ontop of goal based on y location
         if (defaultBall.y < 243) {
             drawTopOfGoal("left");
             drawTopOfGoal("right");
@@ -1116,12 +1166,6 @@ draw = function() {
         
         drawFrontOfGoal('left');
         drawFrontOfGoal('right');        
-    
-        //continuos for powerUps
-        powerUpGenerate();
-        for (var i in powerUps) {
-            powerUps[i].draw();
-        }
     }
     
     //Settings screen
@@ -1129,21 +1173,8 @@ draw = function() {
         drawSettings();
     }
     
+    //ends screen
     else if (scene === 3) {
         drawEndScreen();
     }
-    
-/*
-    //debug
-    println(miles.name + " is " + dist(miles.x, miles.y+70, defaultBall.x, defaultBall.y));
-    println("square " + sqrt(sq(miles.x-defaultBall.x)+sq(miles.y+70-defaultBall.y)));
-    //players[i].kickDetect();
-    */
-    //println("goalTime " + goalTime);
-    //println(frameCount);
-    //strokeWeight(5);
-    //line(0, 243, 400, 243);
-    //println(powerUps[0].shown);
-    //println(floor((frameCount - miles.powerUpsTime)/60));
-    //println(miles.score);
 };
